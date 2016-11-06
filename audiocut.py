@@ -16,6 +16,8 @@ parser.add_argument("starttime", help="start time in seconds",
                     type=int)
 parser.add_argument("endtime", help="end time in seconds",
                     type=int)
+parser.add_argument("chunklength", help="chunk length in seconds",
+                    type=int)
 parser.add_argument("-v", "--verbosity", action="count",
                     help="increase output verbosity")
 args = parser.parse_args()
@@ -42,31 +44,49 @@ except:
     print('Sorry, file -',fname,'- could not be opened.')
     exit()
 smpfreq = fhand[0]
+chunklength = args.chunklength 
 
 
-# We have thousands of files so we make a subfolder to write them into later
+# We have maybe thousands of files, so we make a subfolder we can fill later
 
 subfolder = make_sure_path_exists(str(fname+'-cut'))
 
 
-# Now we can iterate second wise over the file and write our chunks
+# Now we iterate over the file and write chunks
 
-i = args.starttime
-while i <= args.endtime:
-    istring = str(i)
-    outfname = str(fnamepart[0]+'-'+istring.zfill(4)+'.wav')
+# Bug: start time can't be set manually, it has to be fixed to 0 now.
+# i = args.starttime
+i = 0
+filecount = 0
+
+while i * chunklength + chunklength <= args.endtime:
+    if i == 0:
+        writestart = 0
+    else:
+        writestart = (i * chunklength) * smpfreq
+    if i == 0:
+        writeend = chunklength * smpfreq
+    else:
+        writeend = (i * chunklength + chunklength) * smpfreq
+
+    if args.verbosity == 2:
+        print('Start:',writestart)
+        print('End:',writeend)
+
+    outfname = str(fnamepart[0]+'-'+str(writestart)+'-'+str(writeend)+'.wav')
     outfname = os.path.join(subfolder, outfname)
+
     try:
         scipy.io.wavfile.write(
             outfname,
             smpfreq,
-            fhand[1][smpfreq*i:smpfreq*i+smpfreq:1] # Here's the magic
-            )
-        if args.verbosity == 1:
+            fhand[1][writestart:writeend:1])
+        filecount = filecount + 1
+        if args.verbosity == 1 or args.verbosity == 2:
             print(outfname)
     except:
         print('Sorry, file -',outfname,'- could not be written.')
         exit()
     i = i + 1
 
-print(i,'files have been written.')
+print(filecount,'files have been written.')
