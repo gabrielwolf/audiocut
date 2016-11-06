@@ -1,10 +1,10 @@
 # audiocut
 A Python 3 script that cuts a wave file into chunks of a variable length in seconds.
-The chunks are named in the form of `foo-xxxxx-yyyyy.wav`, where xxxxx and yyyyy represent start and stop samples of the chunk. We have many of them, so they are put into a subfolder `foo.wav-cut/`.
+The chunks are named in the form of `foo-xxxxx-yyyyy.wav`, where xxxxx and yyyyy represent start and stop samples of the chunk. We have many of them, so they are put into a subfolder `foo.wav-cut/`
 
-The purpose of this script is to have sample accurate chunks which can be put together again.
+The purpose of this script is to create sample accurate chunks which can be put together again.
 
-### Bug: start time has to be zero ###
+#### Bug: start time has to be zero ####
 
 ## Usage ##
 Examples:
@@ -68,4 +68,3 @@ At the time of writing (Nov 2016) the used library [scipy.io.wavfile](https://do
 
 ## ToDo ##
 * Make start time and end time optional (and chunk the whole file)
-* Make chunk length variable.
