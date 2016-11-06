@@ -22,6 +22,9 @@ parser.add_argument("-v", "--verbosity", action="count",
                     help="increase output verbosity")
 args = parser.parse_args()
 
+if (args.starttime < 0) or (args.endtime < 1) or (args.chunklength < 1):
+    print("Only positive values for starttime, endtime and chunklength allowed. Exiting.")
+    quit()
 
 # Helper function
 
