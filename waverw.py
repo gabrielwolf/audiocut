@@ -20,6 +20,41 @@ def samples_to_timecode(samples, smprate):
                                                   float((samples % smprate)) / smprate)
 
 
+def compare_timecode(a, b):
+    return timecode_to_samples(a, 44100) - timecode_to_samples(b, 44100)
+
+
+def validate_parameters(fname, smprate, starttime, endtime):
+    retimecode = '[0-9]+:[0-5]*[0-9]:[0-5]*[0-9]:0[.]?[0-9]*'
+    result = 0
+    arguments = {
+        'fname': False,
+        'smprate': False,
+        'starttime': False,
+        'endtime': False }
+    if type(fname) == str:
+        if re.search('[.]wav$', fname):
+            arguments['fname'] = True
+    if type(smprate) == int:
+        if smprate > 0:
+            arguments['smprate'] = True
+    if type(starttime) == str:
+        if re.search(retimecode, starttime):
+            if compare_timecode(starttime, endtime) < 0:
+                arguments['starttime'] = True
+    if type(endtime) == str:
+        if re.search(retimecode, endtime):
+            arguments['endtime'] = True
+    for argument in arguments:
+        # print('Debug:',argument, arguments[argument])
+        if arguments[argument] == False:
+            result = result + 1
+    if result > 0:
+        return False
+    else:
+        return True
+
+
 def read_a_wave_file(fname, starttime, endtime):
     try:
         fhand = scipy.io.wavfile.read(fname)

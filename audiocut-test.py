@@ -1,9 +1,11 @@
 from waverw import timecode_to_samples
 from waverw import samples_to_timecode
+from waverw import compare_timecode
+from waverw import validate_parameters
 from waverw import read_a_wave_file
 from waverw import write_a_wave_file
 
-print('\n== Unit-Tests ==\n')
+print('=== Unit-Tests ===\n')
 
 # If the word "timecode" is used in this document, a string in the form of hh:mm:ss:smp is assumed.
 # The letters stand for numbers that follow these conditions:
@@ -38,6 +40,42 @@ else:
 
 print('----> def samples_to_timecode(samples, smprate)')
 if(samples_to_timecode(88200,44100) == '00:00:02:0.000000'):
+    print('OK.')
+else:
+    print('Failed.')
+
+
+# ==== contract ==== compare_timecode(a, b)
+    # == precondition ==
+    # a  := timecode
+    # b  := timecode
+
+    # == postcondition ==
+    # The function returns 0 if both timecodes are equal,
+    # a positive number if a is bigger than b and
+    # a negative number if a is smaller than b
+
+print('----> def compare_timecode(a, b)')
+if(compare_timecode('0:0:2:0', '0:0:1:0') > 0):
+    print('OK.')
+else:
+    print('Failed.')
+
+
+# ==== contract ==== validate_parameters(fname, smprate, starttime, endtime)
+
+# == precondition ==
+# fname     := filename - str
+# smprate   := sample rate - int >= 0
+# starttime := timecode - str
+# endtime   := timecode - str
+
+# == postcondition ==
+# True is returned when all arguments are in the right form
+
+
+print('----> def validate_parameters(fname, smprate, starttime, endtime)')
+if(validate_parameters('test.wav', 44100, '0:0:2:0.6', '0:0:5:0.6') is not False):
     print('OK.')
 else:
     print('Failed.')
