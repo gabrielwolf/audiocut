@@ -1,6 +1,14 @@
 import scipy.io.wavfile
 import re
 
+def is_timecode(arg):
+    match = re.match('[0-9]+:[0-5]*[0-9]:[0-5]*[0-9]:0[.]?[0-9]*', arg)
+    if match:
+        return True
+    else:
+        return False
+
+
 def timecode_to_samples(timecode, smprate):
     values = timecode.split(':')
     h = int(values[0])

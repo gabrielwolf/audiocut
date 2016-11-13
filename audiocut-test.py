@@ -1,3 +1,4 @@
+from waverw import is_timecode
 from waverw import timecode_to_samples
 from waverw import samples_to_timecode
 from waverw import compare_timecode
@@ -11,6 +12,20 @@ print('=== Unit-Tests ===\n')
 # The letters stand for numbers that follow these conditions:
 # hh       : mm                    : ss                    : smp
 # int >= 0 : int >= 0 && int <= 59 : int >= 0 && int <= 59 : float >= 0 && float < 1
+
+# ==== contract ==== is_timecode(arg)
+    # == precondition ==
+    # arg  := str
+
+    # == postcondition ==
+    # The function returns True if the given argument is a timecode
+    # otherwise it returns False
+
+print('----> def is_timecode(arg)')
+if(is_timecode('0:0:2:0') == True):
+    print('OK.')
+else:
+    print('Failed.')
 
 
 # ==== contract ==== timecode_to_samples(timecode, smprate)
