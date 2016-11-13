@@ -33,7 +33,6 @@ def compare_timecode(a, b):
 
 
 def validate_parameters(fname, smprate, starttime, endtime):
-    retimecode = '[0-9]+:[0-5]*[0-9]:[0-5]*[0-9]:0[.]?[0-9]*'
     result = 0
     arguments = {
         'fname': False,
@@ -47,18 +46,19 @@ def validate_parameters(fname, smprate, starttime, endtime):
         if smprate > 0:
             arguments['smprate'] = True
     if type(starttime) == str:
-        if re.search(retimecode, starttime):
+        if is_timecode(starttime):
             if compare_timecode(starttime, endtime) < 0:
                 arguments['starttime'] = True
     if type(endtime) == str:
-        if re.search(retimecode, endtime):
+        if is_timecode(endtime):
             arguments['endtime'] = True
     for argument in arguments:
         # print('Debug:',argument, arguments[argument])
         if arguments[argument] == False:
             result = result + 1
     if result > 0:
-        return False
+        print(arguments)
+        raise Exception("Command line arguments not well formed! Have a look at the line starting with {' some lines above. False means something wrong.")
     else:
         return True
 

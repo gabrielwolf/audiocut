@@ -86,7 +86,8 @@ else:
 # endtime   := timecode - str
 
 # == postcondition ==
-# True is returned when all arguments are in the right form
+# True is returned when all arguments are well formed and starttime is
+# smaller than endtime
 
 
 print('----> def validate_parameters(fname, smprate, starttime, endtime)')
