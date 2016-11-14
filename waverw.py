@@ -32,13 +32,14 @@ def compare_timecode(a, b):
     return timecode_to_samples(a, 44100) - timecode_to_samples(b, 44100)
 
 
-def validate_parameters(fname, smprate, starttime, endtime):
+def validate_parameters(fname, smprate, starttime, endtime, chunklength):
     result = 0
     arguments = {
         'fname': False,
         'smprate': False,
         'starttime': False,
-        'endtime': False }
+        'endtime': False,
+        'chunklength': False }
     if type(fname) == str:
         if re.search('[.]wav$', fname):
             arguments['fname'] = True
@@ -52,6 +53,10 @@ def validate_parameters(fname, smprate, starttime, endtime):
     if type(endtime) == str:
         if is_timecode(endtime):
             arguments['endtime'] = True
+    if type(chunklength) == str:
+        if is_timecode(chunklength):
+            if timecode_to_samples(chunklength, smprate) <= timecode_to_samples(endtime, smprate) - timecode_to_samples(starttime, smprate):
+                arguments['chunklength'] = True
     for argument in arguments:
         # print('Debug:',argument, arguments[argument])
         if arguments[argument] == False:

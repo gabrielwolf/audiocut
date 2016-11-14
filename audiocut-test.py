@@ -77,21 +77,22 @@ else:
     print('Failed.')
 
 
-# ==== contract ==== validate_parameters(fname, smprate, starttime, endtime)
+# ==== contract ==== validate_parameters(fname, smprate, starttime, endtime, chunklength)
 
 # == precondition ==
-# fname     := filename - str
-# smprate   := sample rate - int >= 0
-# starttime := timecode - str
-# endtime   := timecode - str
+# fname       := filename - str
+# smprate     := sample rate - int >= 0
+# starttime   := timecode - str
+# endtime     := timecode - str
+# chunklength := timecode - str
 
 # == postcondition ==
-# True is returned when all arguments are well formed and starttime is
-# smaller than endtime
+# True is returned when all arguments are well formed, starttime is smaller than endtime
+# and chunklength is smaller or equal to the duration between starttime end endtime
 
 
-print('----> def validate_parameters(fname, smprate, starttime, endtime)')
-if(validate_parameters('test.wav', 44100, '0:0:2:0.6', '0:0:5:0.6') is not False):
+print('----> def validate_parameters(fname, smprate, starttime, endtime, chunklength)')
+if(validate_parameters('test.wav', 44100, '0:0:2:0.6', '0:0:5:0.6', '0:0:1:0') is not False):
     print('OK.')
 else:
     print('Failed.')
