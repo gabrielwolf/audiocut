@@ -3,8 +3,6 @@ from waverw import timecode_to_samples
 from waverw import samples_to_timecode
 from waverw import compare_timecode
 from waverw import validate_parameters
-from waverw import read_a_wave_file
-from waverw import write_a_wave_file
 
 print('=== Unit-Tests ===\n')
 
@@ -112,38 +110,6 @@ else:
 
 print('----> def validate_parameters(fname, smprate, starttime, endtime, chunklength)')
 if validate_parameters('test.wav', 44100, '0:0:2:0.6', '0:0:5:0.6', '0:0:1:0'):
-    print('OK.')
-else:
-    print('Failed.')
-
-
-# ==== contract ==== read_a_wave_file(fname, starttime, endtime)
-    # == precondition ==
-    # fname     := name of a wave file, that should be read
-    # starttime := a positive timecode, smaller than the endtime timecode
-    # endtime   := a positive timecode, smaller or equal to the length of the file
-
-    # == postcondition ==
-    # the segment of the wave file is returned as adarray
-
-print('----> def read_a_wav_file(fname, starttime, endtime)')
-if read_a_wave_file('zyn.wav', '0:0:0:0', '0:0:1:0'):
-    print('OK.')
-else:
-    print('Failed.')
-
-
-# ==== contract ==== write_a_wave_file(fname, starttime, endtime)
-    # == precondition ==
-    # fname     := name of a wave file, that should be read
-    # starttime := a positive timecode, smaller than the endtime timecode
-    # endtime   := a positive timecode, smaller or equal to the length of the file
-
-    # == postcondition ==
-    # a segment of the wave file was written and True was given back
-
-print('----> def write_a_wav_file(fname, starttime, endtime)')
-if write_a_wave_file('zyn.wav', '0:0:15:0', '0:0:20:0'):
     print('OK.')
 else:
     print('Failed.')

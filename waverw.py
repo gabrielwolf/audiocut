@@ -1,4 +1,3 @@
-import scipy.io.wavfile
 import re
 
 def is_timecode(arg):
@@ -14,12 +13,12 @@ def timecode_to_samples(timecode, smprate):
         # print('Debug: argument is not timecode')
         return False
     if type(smprate) != int:
-        # print('Debug timecode_to_samples(timecode, smprate): argument smprate is not an int')
+        # print('Debug -- timecode_to_samples(timecode, smprate): argument smprate is not an int')
         return False
     if smprate <= 0:
-        # print('Debug samples_to_timecode(samples, smprate): argument smprate is 0 or negative')
+        # print('Debug -- samples_to_timecode(samples, smprate): argument smprate is 0 or negative')
         return False
-        
+
     values = timecode.split(':')
     hours = int(values[0])
     minutes = int(values[1])
@@ -35,16 +34,16 @@ def timecode_to_samples(timecode, smprate):
 
 def samples_to_timecode(samples, smprate):
     if type(samples) != int:
-        # print('Debug samples_to_timecode(samples, smprate): argument samples is not an int')
+        # print('Debug -- samples_to_timecode(samples, smprate): argument samples is not an int')
         return False
     if samples < 0:
-        # print('Debug samples_to_timecode(samples, smprate): argument samples is negative')
+        # print('Debug -- samples_to_timecode(samples, smprate): argument samples is negative')
         return False
     if type(smprate) != int:
-        # print('Debug samples_to_timecode(samples, smprate): argument smprate is not an int')
+        # print('Debug -- samples_to_timecode(samples, smprate): argument smprate is not an int')
         return False
     if smprate <= 0:
-        # print('Debug samples_to_timecode(samples, smprate): argument smprate is 0 or negative')
+        # print('Debug -- samples_to_timecode(samples, smprate): argument smprate is 0 or negative')
         return False
 
     smp_per_hour = 60*60 * smprate
@@ -65,7 +64,7 @@ def samples_to_timecode(samples, smprate):
     if is_timecode(result):
         return result
     else:
-        print('Debug samples_to_timecode(samples, smprate): something went wrong')
+        print('Debug -- samples_to_timecode(samples, smprate): something went wrong')
         return False
 
 
@@ -109,37 +108,10 @@ def validate_parameters(fname, smprate, starttime, endtime, chunklength):
         if arguments[argument] == False:
             result = result + 1
     if result > 0:
-        print(arguments)
-        raise Exception("Command line arguments not well formed! Have a look at the line starting with {' some lines above. False means something wrong.")
+        print('Command line arguments not well formed!')
+        for argument in arguments:
+            if arguments[argument] == False:
+                print('Error in argument',argument)
+        quit()
     else:
         return True
-
-
-def read_a_wave_file(fname, starttime, endtime):
-    try:
-        fhand = scipy.io.wavfile.read(fname)
-    except:
-        return False
-    excerpt = fhand[1][timecode_to_samples(
-        starttime, fhand[0]):timecode_to_samples(endtime, fhand[0])]
-    return fhand[0], excerpt
-
-
-def write_a_wave_file(fname, starttime, endtime):
-    fhand = read_a_wave_file(fname, starttime, endtime)
-
-    outputstarttime = str(timecode_to_samples(starttime, fhand[0]))
-    outputendtime = str(timecode_to_samples(endtime, fhand[0]))
-
-    fnamebase = re.findall('(.+).wav', fname)
-    outfname = fnamebase[0] + '_' + \
-        outputstarttime + '-' + outputendtime + '.wav'
-
-    try:
-        scipy.io.wavfile.write(
-            outfname,
-            fhand[0],
-            fhand[1])
-        return True
-    except:
-        return False
