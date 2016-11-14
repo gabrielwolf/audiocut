@@ -2,7 +2,7 @@ import scipy.io.wavfile
 import re
 
 def is_timecode(arg):
-    match = re.match('[0-9]+:[0-5]*[0-9]:[0-5]*[0-9]:0[.]?[0-9]*', arg)
+    match = re.match('^[0-9]+:[0-5]*[0-9]:[0-5]*[0-9]:0[.]?[0-9]*$', arg)
     if match:
         return True
     else:
