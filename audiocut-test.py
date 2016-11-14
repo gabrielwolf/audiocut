@@ -51,18 +51,21 @@ else:
 # ==== contract ==== samples_to_timecode(samples, smprate)
     # == precondition ==
     # samples   := int >= 0
-    # smprate   := int >= 0
+    # smprate   := int > 0
 
     # == postcondition ==
     # The function returns a string in the form of a timecode, that represents
-    # the time, corresponding to a given number of samples and a given sample rate
+    # the time, corresponding to given numbers of samples and sample rate
 
 print('----> def samples_to_timecode(samples, smprate)')
 if samples_to_timecode(88200,44100) == '00:00:02:0.000000':
-    print('OK.')
+    print('Calc OK.')
 else:
-    print('Failed.')
-
+    print('Calc Failed.')
+if not samples_to_timecode(5,0):
+    print('Bad input OK.')
+else:
+    print('Bad input Failed.')
 
 # ==== contract ==== compare_timecode(a, b)
     # == precondition ==
@@ -90,7 +93,7 @@ else:
 if not compare_timecode('0:0:1:0', '0:0:70:0'):
     print('Bad input OK.')
 else:
-    print('Failed.')
+    print('Bad input Failed.')
 
 
 # ==== contract ==== validate_parameters(fname, smprate, starttime, endtime, chunklength)

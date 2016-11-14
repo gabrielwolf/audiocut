@@ -11,33 +11,70 @@ def is_timecode(arg):
 
 def timecode_to_samples(timecode, smprate):
     if not is_timecode(timecode):
-        print('Debug: argument is not timecode')
+        # print('Debug: argument is not timecode')
         return False
-    else:
-        values = timecode.split(':')
-        h = int(values[0])
-        m = int(values[1])
-        s = int(values[2])
-        fraction = float(values[3])
-        total = h * 3600 * smprate + m * 60 * smprate + \
-            s * smprate + int(fraction * smprate)
-        return total
+    if type(smprate) != int:
+        # print('Debug timecode_to_samples(timecode, smprate): argument smprate is not an int')
+        return False
+    if smprate <= 0:
+        # print('Debug samples_to_timecode(samples, smprate): argument smprate is 0 or negative')
+        return False
+        
+    values = timecode.split(':')
+    hours = int(values[0])
+    minutes = int(values[1])
+    seconds = int(values[2])
+    fraction = float(values[3])
+
+    total = hours * 60*60 * smprate + \
+            minutes * 60 * smprate + \
+            seconds * smprate + \
+            int(fraction * smprate)
+    return total
 
 
 def samples_to_timecode(samples, smprate):
-    return '{0:02d}:{1:02d}:{2:02d}:{3:f}'.format(int(samples / (3600 * smprate)),
-                                                  int(samples /
-                                                      (60 * smprate) % 60),
-                                                  int(samples / smprate % 60),
-                                                  float((samples % smprate)) / smprate)
+    if type(samples) != int:
+        # print('Debug samples_to_timecode(samples, smprate): argument samples is not an int')
+        return False
+    if samples < 0:
+        # print('Debug samples_to_timecode(samples, smprate): argument samples is negative')
+        return False
+    if type(smprate) != int:
+        # print('Debug samples_to_timecode(samples, smprate): argument smprate is not an int')
+        return False
+    if smprate <= 0:
+        # print('Debug samples_to_timecode(samples, smprate): argument smprate is 0 or negative')
+        return False
+
+    smp_per_hour = 60*60 * smprate
+    smp_per_min  = 60    * smprate
+ 
+    hours = int(samples / smp_per_hour)
+    samples -= hours * smp_per_hour
+ 
+    minutes = int(samples / smp_per_min)
+    samples -= minutes * smp_per_min
+ 
+    seconds = int(samples / smprate)
+    samples -= seconds * smprate
+ 
+    fraction = float(samples / smprate)
+
+    result = '{0:02d}:{1:02d}:{2:02d}:{3:f}'.format(hours, minutes, seconds, fraction)
+    if is_timecode(result):
+        return result
+    else:
+        print('Debug samples_to_timecode(samples, smprate): something went wrong')
+        return False
 
 
 def compare_timecode(a, b):
     if not is_timecode(a):
-        print('Debug: a is not timecode')
+        # print('Debug: a is not timecode')
         return False
     if not is_timecode(b):
-        print('Debug: b is not timecode')
+        # print('Debug: b is not timecode')
         return False
     return timecode_to_samples(a, 44100) - timecode_to_samples(b, 44100)
 
