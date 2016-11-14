@@ -1,8 +1,8 @@
-from waverw import is_timecode
-from waverw import timecode_to_samples
-from waverw import samples_to_timecode
-from waverw import compare_timecode
-from waverw import validate_parameters
+from timecode import is_timecode
+from timecode import timecode_to_samples
+from timecode import samples_to_timecode
+from timecode import compare_timecode
+from timecode import validate_parameters
 
 print('=== Unit-Tests ===\n')
 
