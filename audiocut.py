@@ -12,11 +12,11 @@ from timecode import validate_parameters
 parser = argparse.ArgumentParser()
 parser.add_argument("input", help="wav file that has to be cut",
                     type=str)
-parser.add_argument("starttime", help="start time in timecode hh:mm:ss:f where f is a float between 0 and excluding 1",
+parser.add_argument("starttime", help="timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)",
                     type=str)
-parser.add_argument("endtime", help="start time in timecode hh:mm:ss:f where f is a float between 0 and excluding 1",
+parser.add_argument("endtime", help="timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)",
                     type=str)
-parser.add_argument("chunklength", help="chunk length in timecode",
+parser.add_argument("chunklength", help="timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)",
                     type=str)
 parser.add_argument("-v", "--verbosity", action="count",
                     help="increase output verbosity")
