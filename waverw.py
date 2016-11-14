@@ -10,14 +10,18 @@ def is_timecode(arg):
 
 
 def timecode_to_samples(timecode, smprate):
-    values = timecode.split(':')
-    h = int(values[0])
-    m = int(values[1])
-    s = int(values[2])
-    fraction = float(values[3])
-    total = h * 3600 * smprate + m * 60 * smprate + \
-        s * smprate + int(fraction * smprate)
-    return total
+    if not is_timecode(timecode):
+        print('Debug: argument is not timecode')
+        return False
+    else:
+        values = timecode.split(':')
+        h = int(values[0])
+        m = int(values[1])
+        s = int(values[2])
+        fraction = float(values[3])
+        total = h * 3600 * smprate + m * 60 * smprate + \
+            s * smprate + int(fraction * smprate)
+        return total
 
 
 def samples_to_timecode(samples, smprate):
@@ -29,6 +33,12 @@ def samples_to_timecode(samples, smprate):
 
 
 def compare_timecode(a, b):
+    if not is_timecode(a):
+        print('Debug: a is not timecode')
+        return False
+    if not is_timecode(b):
+        print('Debug: b is not timecode')
+        return False
     return timecode_to_samples(a, 44100) - timecode_to_samples(b, 44100)
 
 

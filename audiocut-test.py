@@ -39,9 +39,13 @@ else:
 
 print('----> def timecode_to_samples(timecode, smprate)')
 if timecode_to_samples('00:00:02:0', 44100) == 88200:
-    print('OK.')
+    print('Calc OK.')
 else:
-    print('Failed.')
+    print('Calc Failed.')
+if not timecode_to_samples('00:00:70:0', 44100):
+    print('Bad input OK.')
+else:
+    print('Bad input Failed.')
 
 
 # ==== contract ==== samples_to_timecode(samples, smprate)
@@ -71,8 +75,20 @@ else:
     # a negative number if a is smaller than b
 
 print('----> def compare_timecode(a, b)')
+if compare_timecode('0:0:2:0', '0:0:2:0') == 0:
+    print('Equals OK.')
+else:
+    print('Equals Failed.')
 if compare_timecode('0:0:2:0', '0:0:1:0') > 0:
-    print('OK.')
+    print('Bigger OK.')
+else:
+    print('Bigger Failed.')
+if compare_timecode('0:0:1:0', '0:0:2:0') < 0:
+    print('Smaller OK.')
+else:
+    print('Smaller Failed.')
+if not compare_timecode('0:0:1:0', '0:0:70:0'):
+    print('Bad input OK.')
 else:
     print('Failed.')
 
