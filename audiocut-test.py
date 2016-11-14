@@ -22,7 +22,7 @@ print('=== Unit-Tests ===\n')
     # otherwise it returns False
 
 print('----> def is_timecode(arg)')
-if(is_timecode('0:0:2:0') == True):
+if is_timecode('0:0:2:0'):
     print('OK.')
 else:
     print('Failed.')
@@ -38,7 +38,7 @@ else:
     # corresponding to a given timecode and sample rate
 
 print('----> def timecode_to_samples(timecode, smprate)')
-if(timecode_to_samples('00:00:02:0', 44100) == 88200):
+if timecode_to_samples('00:00:02:0', 44100) == 88200:
     print('OK.')
 else:
     print('Failed.')
@@ -54,7 +54,7 @@ else:
     # the time, corresponding to a given number of samples and a given sample rate
 
 print('----> def samples_to_timecode(samples, smprate)')
-if(samples_to_timecode(88200,44100) == '00:00:02:0.000000'):
+if samples_to_timecode(88200,44100) == '00:00:02:0.000000':
     print('OK.')
 else:
     print('Failed.')
@@ -71,7 +71,7 @@ else:
     # a negative number if a is smaller than b
 
 print('----> def compare_timecode(a, b)')
-if(compare_timecode('0:0:2:0', '0:0:1:0') > 0):
+if compare_timecode('0:0:2:0', '0:0:1:0') > 0:
     print('OK.')
 else:
     print('Failed.')
@@ -92,7 +92,7 @@ else:
 
 
 print('----> def validate_parameters(fname, smprate, starttime, endtime, chunklength)')
-if(validate_parameters('test.wav', 44100, '0:0:2:0.6', '0:0:5:0.6', '0:0:1:0') is not False):
+if validate_parameters('test.wav', 44100, '0:0:2:0.6', '0:0:5:0.6', '0:0:1:0'):
     print('OK.')
 else:
     print('Failed.')
@@ -108,7 +108,7 @@ else:
     # the segment of the wave file is returned as adarray
 
 print('----> def read_a_wav_file(fname, starttime, endtime)')
-if(read_a_wave_file('zyn.wav', '0:0:0:0', '0:0:1:0') is not False):
+if read_a_wave_file('zyn.wav', '0:0:0:0', '0:0:1:0'):
     print('OK.')
 else:
     print('Failed.')
@@ -124,7 +124,7 @@ else:
     # a segment of the wave file was written and True was given back
 
 print('----> def write_a_wav_file(fname, starttime, endtime)')
-if(write_a_wave_file('zyn.wav', '0:0:15:0', '0:0:20:0') is not False):
+if write_a_wave_file('zyn.wav', '0:0:15:0', '0:0:20:0'):
     print('OK.')
 else:
     print('Failed.')
