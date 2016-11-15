@@ -113,7 +113,7 @@ for chunk in range(len(chunks)):
     starttime = chunks[chunk][0]
     endtime = chunks[chunk][1]
 
-    outfname = str(fnamebase[0]+'-'+str(starttime)+'-'+str(endtime)+'.wav')
+    outfname = '{0}-{1:010d}-{2:010d}.wav'.format(fnamebase[0], starttime, endtime)
     outfname = os.path.join(subfolder, outfname)
 
     try:

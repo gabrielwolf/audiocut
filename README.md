@@ -1,6 +1,6 @@
 # audiocut
 A Python 3 script that cuts a wave file into chunks of a variable length in seconds.
-The chunks are named in the form of `foo-xxxxx-yyyyy.wav`, where xxxxx and yyyyy represent start and stop samples of the chunk. We have many of them, so they are put into a subfolder `foo.wav-cut/`
+The chunks are named in the form of `foo-xxxxxxxxxx-yyyyyyyyyy.wav`, where xxxxxxxxxx and yyyyyyyyyy represent start and stop samples of the chunk. We have many of them, so they are put into a subfolder `foo.wav-cut/`
 
 The purpose of this script is to create sample accurate chunks which can be put together again.
 
@@ -11,24 +11,23 @@ hh = hours, mm = minutes, ss = seconds, f = fraction of a second, that is a rati
 Examples:
 
     $ python audiocut.py -v foo.wav 0:0:0:0 0:1:0:0 0:0:7:0
-    foo.wav-cut/foo-0-336000.wav
-    foo.wav-cut/foo-336000-672000.wav
-    foo.wav-cut/foo-672000-1008000.wav
-    foo.wav-cut/foo-1008000-1344000.wav
-    foo.wav-cut/foo-1344000-1680000.wav
-    foo.wav-cut/foo-1680000-2016000.wav
-    foo.wav-cut/foo-2016000-2352000.wav
-    foo.wav-cut/foo-2352000-2688000.wav
-    foo.wav-cut/foo-2688000-2880000.wav
+    foo.wav-cut/foo-0000000000-0000336000.wav
+    foo.wav-cut/foo-0000336000-0000672000.wav
+    foo.wav-cut/foo-0000672000-0001008000.wav
+    foo.wav-cut/foo-0001008000-0001344000.wav
+    foo.wav-cut/foo-0001344000-0001680000.wav
+    foo.wav-cut/foo-0001680000-0002016000.wav
+    foo.wav-cut/foo-0002016000-0002352000.wav
+    foo.wav-cut/foo-0002352000-0002688000.wav
+    foo.wav-cut/foo-0002688000-0002880000.wav
     9 files have been written.
 
-    $ python audiocut.py -v foo.wav 0:0:0:0 0:0:5:0 0:0:1:0
-    foo.wav-cut/foo-0-48000.wav
-    foo.wav-cut/foo-48000-96000.wav
-    foo.wav-cut/foo-96000-144000.wav
-    foo.wav-cut/foo-144000-192000.wav
-    foo.wav-cut/foo-192000-240000.wav
-    5 files have been written.
+    $ python audiocut.py -v foo.wav 0:0:15:0 0:0:20:0 0:0:1:0.5
+    foo.wav-cut/foo-0000720000-0000792000.wav
+    foo.wav-cut/foo-0000792000-0000864000.wav
+    foo.wav-cut/foo-0000864000-0000936000.wav
+    foo.wav-cut/foo-0000936000-0000960000.wav
+    4 files have been written.
 
 Help:
 
