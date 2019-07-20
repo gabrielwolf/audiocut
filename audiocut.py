@@ -10,92 +10,81 @@ from timecode import validate_parameters
 # ==== command line arguments and help ====
 
 parser = argparse.ArgumentParser()
-parser.add_argument("input", help="wav file that has to be cut",
+parser.add_argument("input", help="wav file that has to be cut", type=str)
+parser.add_argument("start_time", help="Timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)",
                     type=str)
-parser.add_argument("starttime", help="timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)",
+parser.add_argument("end_time", help="Timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)",
                     type=str)
-parser.add_argument("endtime", help="timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)",
-                    type=str)
-parser.add_argument("chunklength", help="timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)",
-                    type=str)
-parser.add_argument("-v", "--verbosity", action="count",
-                    help="increase output verbosity")
+parser.add_argument("regular_chunk_length",
+                    help="Timecode in the form of hh:mm:ss:f where f is a float >= 0 and < 1 (e.g. 0.5)", type=str)
+parser.add_argument("-v", "--verbosity", action="count", help="increase output verbosity")
 args = parser.parse_args()
 
 
-# ==== stuff ====
+# ==== file handling ====
 
-# handy variable names, file check and validation of all arguments
-fname = args.input
-fnamebase = re.findall('(.+).wav',fname)
+file_name = args.input
+file_name_base = re.findall('(.+).wav', file_name)
 
 try:
-    fhand = scipy.io.wavfile.read(fname)
-except:
-    print('Sorry, file -',fname,'- could not be opened. Exiting.')
+    file_handler = scipy.io.wavfile.read(file_name)
+except OSError:
+    print('Sorry, file -', file_name, '- could not be opened. Exiting.')
     quit()
 
-starttime = args.starttime
-endtime = args.endtime
-chunklength = args.chunklength
 
-if not is_timecode(starttime) or not is_timecode(endtime) or not is_timecode(chunklength):
-    print('Sorry, a timecode was not well formed. Exiting.')
+# ==== parameter testing
+
+start_time = args.start_time
+end_time = args.end_time
+regular_chunk_length = args.regular_chunk_length
+
+if not is_timecode(start_time) or not is_timecode(end_time) or not is_timecode(regular_chunk_length):
+    print('Sorry, a Timecode was not well formed. Exiting.')
     quit()
 
-smprate = fhand[0]
-filelength = len(fhand[1])
-duration = timecode_to_samples(endtime, smprate) - timecode_to_samples(starttime, smprate)
+sample_rate = file_handler[0]
+total_time_of_input_file = len(file_handler[1])
+total_time_of_all_chunks = timecode_to_samples(end_time, sample_rate) - timecode_to_samples(start_time, sample_rate)
 
-if filelength - timecode_to_samples(endtime, smprate) < 0:
-    print("Sorry, the endtime seems to be longer than the wav file itself. Exiting.")
+if total_time_of_input_file - timecode_to_samples(end_time, sample_rate) < 0:
+    print("Sorry, the end_time seems to be longer than the wav file itself. Exiting.")
     quit()
 
-validate_parameters(fname, fhand[0], starttime, endtime, chunklength)
+validate_parameters(file_name, file_handler[0], start_time, end_time, regular_chunk_length)
 
 
 # ==== the algorithm ====
 
-# from now on we calculate in samples.
-starttime = timecode_to_samples(starttime, smprate)
-endtime = timecode_to_samples(endtime, smprate)
-chunklength = timecode_to_samples(chunklength, smprate)
+start_time = timecode_to_samples(start_time, sample_rate)
+end_time = timecode_to_samples(end_time, sample_rate)
+regular_chunk_length = timecode_to_samples(regular_chunk_length, sample_rate)
 
-# total number of chunks that have full chunklength
-totalfullchunks = int(duration / chunklength)
-# print('Debug -- totalfullchunks:',totalfullchunks)
+total_count_of_regular_chunks = int(total_time_of_all_chunks / regular_chunk_length)
 
-# list for all chunks
 chunks = []
+first_chunk = (start_time, start_time + regular_chunk_length)
+chunks.append(first_chunk)
+chunk_count = 1
 
-# chunk as tuple with starttime and endtime
-chunk = (0, 0)
-
-# write the first chunk
-chunk = (starttime, starttime + chunklength)
-chunks.append(chunk)
-
-# write remaining chunks with full chunklength
-chunkcount = 1
-while chunkcount < totalfullchunks:
-    chunk = (chunks[chunkcount-1][1], chunks[chunkcount-1][1] + chunklength)
+while chunk_count < total_count_of_regular_chunks:
+    chunk = (chunks[chunk_count - 1][1], chunks[chunk_count - 1][1] + regular_chunk_length)
     chunks.append(chunk)
-    chunkcount = chunkcount + 1
+    chunk_count = chunk_count + 1
 
-# write the remaining portion as an additional chunk, if it doesn't fit
-if chunks[chunkcount-1][1] < starttime + duration:
-    chunk = (chunks[chunkcount-1][1], starttime + duration)
+# if chunks don't fit regularly, calculate the remaining part
+if chunks[chunk_count - 1][1] < start_time + total_time_of_all_chunks:
+    chunk = (chunks[chunk_count - 1][1], start_time + total_time_of_all_chunks)
     chunks.append(chunk)
-    chunkcount = chunkcount + 1
+    chunk_count = chunk_count + 1
 
 if args.verbosity == 2:
     print(chunks)
 
 
-# ==== write chunks to disk ====
+# ==== write everything to disk ====
 
-# we possibly get thousands of files, so everything goes into a subfolder
-def make_sure_path_exists(path):
+def create_sub_folder(path):
     try:
         os.makedirs(path)
     except OSError as exception:
@@ -103,26 +92,23 @@ def make_sure_path_exists(path):
             raise
     return path
 
-subfolder = make_sure_path_exists(str(fname+'-cut'))
 
-outfname = ''
-starttime = 0
-endtime = 0
+sub_folder = create_sub_folder(str(file_name + '-cut'))
 
 for chunk in range(len(chunks)):
-    starttime = chunks[chunk][0]
-    endtime = chunks[chunk][1]
+    start_time = chunks[chunk][0]
+    end_time = chunks[chunk][1]
 
-    outfname = '{0}-{1:010d}-{2:010d}.wav'.format(fnamebase[0], starttime, endtime)
-    outfname = os.path.join(subfolder, outfname)
+    out_file_name = '{0}-{1:010d}-{2:010d}.wav'.format(file_name_base[0], start_time, end_time)
+    out_file_name = os.path.join(sub_folder, out_file_name)
 
     try:
-        scipy.io.wavfile.write(outfname,smprate,fhand[1][starttime:endtime])
+        scipy.io.wavfile.write(out_file_name, sample_rate, file_handler[1][start_time:end_time])
         if args.verbosity == 1 or args.verbosity == 2:
-           print(outfname)
-    except:
-        print('Sorry, file -',outfname,'- could not be written.')
+            print(out_file_name)
+    except OSError:
+        print('Sorry, file ', out_file_name, ' could not be written.')
         quit()
 
-print(chunkcount,'files have been written.')
+print(chunk_count, 'files have been written.')
 quit()
